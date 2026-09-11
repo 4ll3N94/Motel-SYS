@@ -1,0 +1,130 @@
+BEGIN TRANSACTION;
+
+-- -----------------------------------------------------------------------------
+-- 1. USUARIOS (1 Administrador + 3 Cajeros/Recepcionistas)
+-- Contraseña para todos: demo123 (encriptada con SHA-256)
+-- -----------------------------------------------------------------------------
+DELETE FROM usuarios;
+
+INSERT INTO usuarios (cedula, nombre, apellido, correo, telefono, usuario, clave, rol) VALUES
+('V-18450123', 'Carlos', 'Mendoza', 'admin.carlos@motel.com', '04141234567', 'admin_demo', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'admin'),
+('V-24890654', 'Mariana', 'Paredes', 'mariana.caja@motel.com', '04247654321', 'mariana_cajero', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'recepcionista'),
+('V-26112987', 'Alejandro', 'Rivas', 'alejandro.caja@motel.com', '04129876543', 'alejandro_cajero', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'recepcionista'),
+('V-23541890', 'Yelitza', 'Salazar', 'yelitza.caja@motel.com', '04165432109', 'yelitza_cajera', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'recepcionista');
+
+
+-- -----------------------------------------------------------------------------
+-- 2. HABITACIONES (30 habitaciones distribuidas para probar el tablero)
+-- -----------------------------------------------------------------------------
+DELETE FROM habitaciones;
+
+-- 10 Presidenciales (P-101 a P-110) - $30 (4h) / $65 (24h)
+INSERT INTO habitaciones (codigo, estado, precio_4h, precio_24h) VALUES
+('P-101', 'Limpia', 30.00, 65.00),
+('P-102', 'Limpia', 30.00, 65.00),
+('P-103', 'Limpia', 30.00, 65.00),
+('P-104', 'Limpia', 30.00, 65.00),
+('P-105', 'Limpia', 30.00, 65.00),
+('P-106', 'Limpia', 30.00, 65.00),
+('P-107', 'Limpia', 30.00, 65.00),
+('P-108', 'Limpia', 30.00, 65.00),
+('P-109', 'Limpia', 30.00, 65.00),
+('P-110', 'Limpia', 30.00, 65.00);
+
+-- 10 Suites (S-201 a S-210) - $22 (4h) / $48 (24h)
+INSERT INTO habitaciones (codigo, estado, precio_4h, precio_24h) VALUES
+('S-201', 'Limpia', 22.00, 48.00),
+('S-202', 'Limpia', 22.00, 48.00),
+('S-203', 'Limpia', 22.00, 48.00),
+('S-204', 'Limpia', 22.00, 48.00),
+('S-205', 'Limpia', 22.00, 48.00),
+('S-206', 'Limpia', 22.00, 48.00),
+('S-207', 'Limpia', 22.00, 48.00),
+('S-208', 'Limpia', 22.00, 48.00),
+('S-209', 'Limpia', 22.00, 48.00),
+('S-210', 'Limpia', 22.00, 48.00);
+
+-- 10 Estándar (E-301 a E-310) - $15 (4h) / $35 (24h)
+INSERT INTO habitaciones (codigo, estado, precio_4h, precio_24h) VALUES
+('E-301', 'Limpia', 15.00, 35.00),
+('E-302', 'Limpia', 15.00, 35.00),
+('E-303', 'Limpia', 15.00, 35.00),
+('E-304', 'Limpia', 15.00, 35.00),
+('E-305', 'Limpia', 15.00, 35.00),
+('E-306', 'Limpia', 15.00, 35.00),
+('E-307', 'Limpia', 15.00, 35.00),
+('E-308', 'Limpia', 15.00, 35.00),
+('E-309', 'Limpia', 15.00, 35.00),
+('E-310', 'Limpia', 15.00, 35.00);
+
+
+-- -----------------------------------------------------------------------------
+-- 3. PRODUCTOS DEL MINI-BAR / MERCANCÍA (52 Productos)
+-- Todos con Stock = 100, Stock Mínimo = 15 y Costo CPP definido
+-- -----------------------------------------------------------------------------
+DELETE FROM productos_mercancia;
+
+INSERT INTO productos_mercancia (nombre, precio_usd, costo_unitario_usd, stock, stock_minimo) VALUES
+-- Cervezas y Licores
+('Cerveza Polar Pilsen Lata 355ml', 1.50, 0.85, 100, 15),
+('Cerveza Polar Light Lata 355ml', 1.50, 0.85, 100, 15),
+('Cerveza Solera Verde Lata 355ml', 2.00, 1.10, 100, 15),
+('Cerveza Solera Blue Lata 355ml', 2.00, 1.10, 100, 15),
+('Cerveza Corona Botella 355ml', 3.00, 1.70, 100, 15),
+('Ron Santa Teresa Gran Reserva 0.75L', 12.00, 7.50, 100, 15),
+('Ron Cacique 500 Añejo 0.75L', 15.00, 9.20, 100, 15),
+('Whisky Red Label 0.75L', 22.00, 14.00, 100, 15),
+('Whisky Black Label 0.75L', 38.00, 26.00, 100, 15),
+('Vodka Gordons 0.70L', 11.00, 6.80, 100, 15),
+('Vino Tinto Frontera Cabernet 750ml', 10.00, 5.50, 100, 15),
+('Espumante Freixenet Cordon Negro 750ml', 20.00, 12.50, 100, 15),
+
+-- Refrescos, Aguas y Energizantes
+('Agua Mineral Minalba 600ml', 1.00, 0.40, 100, 15),
+('Agua con Gas San Pellegrino 500ml', 2.50, 1.20, 100, 15),
+('Coca-Cola Regular Lata 355ml', 1.50, 0.75, 100, 15),
+('Coca-Cola Sin Azúcar Lata 355ml', 1.50, 0.75, 100, 15),
+('Chinotto Lata 355ml', 1.50, 0.75, 100, 15),
+('Frescolita Lata 355ml', 1.50, 0.75, 100, 15),
+('Agua Tónica Schweppes 355ml', 1.80, 0.90, 100, 15),
+('Bebida Energizante Red Bull 250ml', 3.50, 2.10, 100, 15),
+('Bebida Energizante Monster Energy 473ml', 3.50, 2.00, 100, 15),
+('Jugo Yukery Naranja 300ml', 1.50, 0.70, 100, 15),
+('Jugo Yukery Manzana 300ml', 1.50, 0.70, 100, 15),
+('Gatorade Frutas Tropicales 500ml', 2.00, 1.10, 100, 15),
+
+-- Snacks y Consumibles Dulces / Salados
+('Papas Pringles Original 124g', 4.00, 2.30, 100, 15),
+('Papas Pringles Queso y Crema 124g', 4.00, 2.30, 100, 15),
+('Platanitos Jacks 110g', 1.80, 0.95, 100, 15),
+('Doritos Mega Queso 120g', 2.00, 1.15, 100, 15),
+('Cheetos Horneados 110g', 1.80, 1.00, 100, 15),
+('Maní Salado Jacks 100g', 1.50, 0.70, 100, 15),
+('Chocolate Savoy con Leche 130g', 2.50, 1.40, 100, 15),
+('Chocolate Carré Avellanas 100g', 3.50, 2.00, 100, 15),
+('Galletas Oreo Americanas Original 108g', 2.00, 1.10, 100, 15),
+('Galletas Pirulin Lata 300g', 6.00, 3.80, 100, 15),
+('Chicles Trident Menta Paquete 14s', 1.50, 0.70, 100, 15),
+('Halls Caramelos Frutas', 0.80, 0.35, 100, 15),
+
+-- Salud Sexual y Adultos
+('Preservativos Durex Clásico Caja x3', 4.50, 2.20, 100, 15),
+('Preservativos Durex Retardante Caja x3', 5.50, 2.80, 100, 15),
+('Preservativos Duo Sabor Fresa Caja x3', 3.50, 1.70, 100, 15),
+('Preservativos Duo Texturizado Caja x3', 3.50, 1.70, 100, 15),
+('Preservativos Prime Ultra Fino Caja x3', 4.00, 2.10, 100, 15),
+('Preservativos Prime Tachas / Placer Caja x3', 4.50, 2.30, 100, 15),
+('Gel Lubricante Durex Cereza 50ml', 6.50, 3.80, 100, 15),
+('Gel Lubricante Durex Base Agua 50ml', 6.00, 3.50, 100, 15),
+('Gel Lubricante Efecto Calor 50ml', 7.00, 4.00, 100, 15),
+('Anillo Vibrador Durex Play', 9.00, 5.20, 100, 15),
+
+-- Higiene y Cuidado Personal
+('Cepillo Dental Colgate + Crema Dental Mini', 2.50, 1.20, 100, 15),
+('Enjuague Bucal Listerine Cool Mint 250ml', 3.50, 1.90, 100, 15),
+('Desodorante Rexona Aerosol Hombre 150ml', 4.00, 2.30, 100, 15),
+('Desodorante Rexona Aerosol Mujer 150ml', 4.00, 2.30, 100, 15),
+('Toallitas Húmedas Huggies Paquete x20', 2.00, 1.00, 100, 15),
+('Analgesico Atamel Forte 650mg Blister x10', 2.00, 0.80, 100, 15);
+
+COMMIT;
