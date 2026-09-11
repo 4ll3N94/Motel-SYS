@@ -1470,10 +1470,28 @@ def obtener_metricas_kpis(fecha_inicio: str, fecha_fin: str) -> dict:
 
         # --- DESGLOSE POR MÉTODO DE PAGO ---
         metodos_pago = {"EFECTIVO USD": 0.0, "EFECTIVO BS": 0.0, "PAGO MOVIL": 0.0, "PUNTO DE VENTA": 0.0}
+        
+        # 1. Alquileres
         for p in pagos:
             met = p["metodo"]
             if met in metodos_pago:
                 metodos_pago[met] += p["monto"]
+
+        # 2. Mini-Bar / Mercancía (Total USD por factura)
+        # Usamos un set o agrupamos para no duplicar si la consulta trae joins de detalles
+        ventas_unicas = {}
+        for v in ventas_mer:
+            ventas_unicas[v["id"] if "id" in v else (v["fecha"], v["hab_codigo"])] = (v["metodo"], v["total_usd"])
+        
+        for met, monto in ventas_unicas.values():
+            if met in metodos_pago:
+                metodos_pago[met] += monto
+
+        # 3. Cobros de Daños
+        for d in danos:
+            met = d["metodo"]
+            if met in metodos_pago:
+                metodos_pago[met] += d["monto_usd"]
 
         # --- TOP 5 PRODUCTOS MÁS VENDIDOS ---
         productos_vendidos = {}
@@ -1763,3 +1781,26 @@ def liquidar_deuda_moroso_y_rehabilitar(cedula: str, nombre: str, motivo_origina
         return False
     finally:
         conn.close()
+
+def generar_respaldo_seguro(ruta_destino: str) -> bool:
+    """
+    Realiza un respaldo consistente en caliente usando el API nativo de SQLite.
+    Garantiza compatibilidad absoluta con WAL Mode y entornos compilados (.exe).
+    """
+    try:
+        # Abre conexión directa a la base de datos activa
+        conn_origen = obtener_conexion()
+        
+        # Abre o crea la base de datos de destino elegida por el usuario
+        conn_destino = sqlite3.connect(ruta_destino)
+        
+        # Vuelco nativo página por página (incluye cambios en WAL pendientes)
+        with conn_destino:
+            conn_origen.backup(conn_destino, pages=100)
+            
+        conn_destino.close()
+        conn_origen.close()
+        return True
+    except Exception as e:
+        logging.error(f"Falla al ejecutar backup nativo de SQLite: {e}")
+        return False
