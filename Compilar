@@ -1,3 +1,5 @@
 python -m nuitka --standalone --enable-plugin=tk-inter --include-package=customtkinter --include-package=tkcalendar --include-package=matplotlib --include-package=fpdf --include-package=openpyxl --include-data-dir=database=database --windows-disable-console --windows-icon-from-ico=logo_hotel.ico --output-dir=dist_demo_protegida main.py
-##instalar dependencias desd el txt##
+---------------------------------------------------------------con icono-----------------------
+python -m nuitka --standalone --enable-plugin=tk-inter --include-package=customtkinter --include-package=tkcalendar --include-package=matplotlib --include-package=fpdf --include-package=openpyxl --include-data-dir=database=database --windows-disable-console --windows-icon-from-ico=logo_hotel.ico --output-dir=dist_demo_protegida main.py
+----------------------------##instalar dependencias desd el txt##----------------------------------------------
 pip install -r requirements.txt
