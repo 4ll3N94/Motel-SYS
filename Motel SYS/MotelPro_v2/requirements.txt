@@ -1,0 +1,9 @@
+customtkinter
+tkcalendar
+matplotlib
+fpdf
+openpyxl
+requests
+pillow
+nuitka
+zstandard
